@@ -1,0 +1,10 @@
+{
+  "index": {
+    "title": "Home",
+    "type": "page"
+  },
+  "coding-test": {
+    "title": "Coding-Test",
+    "type": "page"
+  },
+}

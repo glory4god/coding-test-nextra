@@ -1,0 +1,26 @@
+---
+title: 프로그래머스 LV-2 JadenCase 문자열 만들기
+---
+
+# 프로그래머스 LV-2 JadenCase 문자열 만들기
+
+코테에서는 최대한 메소드체이닝을 활용하여 끝내려한다.
+이 문제도 자른 후, 반복한 후, 다시 합치는 과정을 나누지않고 연결지어 마무리 할 수 있었다.
+
+이 문제에서 중간 부분에 나오는 문자열 길이가 0인경우 바로 return '' 을 해주는 과정이있다.
+문제의 공백이 연속해서 나올 수 있다는 부분으로 인해 공백을 제거하기 위해 만들었으며,
+if else 문의 사용보다 가능하다면 return 하여 else 문을 사용하지 않는 것을 추구한다.
+
+====================================
+
+최종코드 
+
+```js
+function solution(s) {
+    return s.split(" ").map(str => {
+        if(str.length === 0) return '';
+        str = str.toLowerCase();
+        return str[0].toUpperCase() + str.substring(1)
+    }).join(" ")
+}
+```

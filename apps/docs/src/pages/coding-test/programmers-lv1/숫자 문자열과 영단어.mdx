@@ -1,0 +1,29 @@
+---
+title: 프로그래머스 LV-1 숫자 문자열과 영단어
+---
+
+# 프로그래머스 LV-1 숫자 문자열과 영단어
+
+이 문제와 같은 경우는 보자마자 정규표현식을 이용한 replace를 생각했다.
+
+한가지 문제가 있다면 보통은 아래와 같이 사용했지만 변수를 담아야하기에 RegExp를 통해 정규표현식을 만들었다는 다른 점이 있다.
+
+
+```js
+s = s.replace(/[표현식]/g, 변경할 문자)
+```
+
+=================================
+
+최종코드 
+
+```js
+function solution(s) {
+    const numberList = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+    for(let i = 0; i < 10; i++){
+        const value = numberList[i]
+        s = s.replace(new RegExp(value, 'g'), i)
+    }
+    return Number(s)
+}
+```

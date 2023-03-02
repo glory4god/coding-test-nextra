@@ -1,0 +1,411 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
+}
+
+enum YesNo {
+  Y
+  N
+}
+
+model Subject {
+  subjectId   Int    @id @default(autoincrement()) @map("subject_id")
+  subjectName String @unique @map("subject_name") @db.VarChar(20)
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  chapters      Chapter[]
+  questions     Question[]
+  pastQuestions PastQuestion[]
+  userTest      UserTest[]
+  userQuestion  UserQuestion[]
+  userData      UserData[]
+
+  @@map("subject")
+}
+
+model PastQuestion {
+  pastQuestionId Int        @id @default(autoincrement()) @map("past_question_id")
+  subject        Subject?   @relation(fields: [subjectId], references: [subjectId])
+  subjectId      Int        @map("subject_id")
+  testYear       String     @map("test_year") @db.VarChar(4) // YYYY 타입
+  testDegree     Int        @map("test_degree")
+  joinCnt        Int        @map("join_cnt")
+  questions      Question[]
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  userTest     UserTest[]
+  userQuestion UserQuestion[]
+
+  @@map("past_question")
+}
+
+model Chapter {
+  chapterId     Int        @id @default(autoincrement()) @map("chapter_id")
+  subject       Subject?   @relation(fields: [subjectId], references: [subjectId])
+  subjectId     Int        @map("subject_id")
+  chapterName   String     @unique @map("chapter_name") @db.VarChar(20)
+  chapterLevel  Int        @map("chapter_level")
+  displayOrder  Int        @map("display_order")
+  highChapterId Int?       @map("high_chapter_id")
+  questions     Question[]
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  userTest       UserTest[]
+  userQuestion   UserQuestion[]
+  userDataDetail UserDataDetail[]
+
+  @@map("chapter")
+}
+
+model Question {
+  questionId     Int           @id @default(autoincrement()) @map("question_id")
+  subjectId      Int           @map("subject_id")
+  subject        Subject?      @relation(fields: [subjectId], references: [subjectId])
+  chapterId      Int           @map("chapter_id")
+  chapter        Chapter?      @relation(fields: [chapterId], references: [chapterId])
+  pastQuestionId Int?          @map("past_question_id")
+  pastQuestion   PastQuestion? @relation(fields: [pastQuestionId], references: [pastQuestionId])
+  inspectionYn   YesNo         @default(N) @map("inspection_yn")
+  choiceYn       YesNo         @map("choice_yn")
+  displayOrder   Int?          @default(0) @map("display_order")
+  content        String        @db.VarChar(255)
+  explain        String?       @db.VarChar(255)
+  imagePath      String?       @map("image_path") @db.VarChar(45)
+  imageName      String?       @map("image_name") @db.VarChar(45)
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  questionDetails     QuestionDetail[]
+  userTestDetails     UserTestDetails[]
+  questionUserHistory QuestionUserHistory[]
+  bookmarks           Bookmark[]
+  questionData        QuestionData?
+  userQuestion        UserQuestion[]
+  reportQuestion      ReportQuestion[]
+
+  @@map("question")
+}
+
+model QuestionData {
+  questionDataId Int       @id @default(autoincrement()) @map("question_data_id")
+  question       Question? @relation(fields: [questionId], references: [questionId])
+  questionId     Int       @unique @map("question_id")
+  correctCnt     Int       @default(0) @map("correct_cnt")
+  wrongCnt       Int       @default(0) @map("wrong_cnt")
+  joinCnt        Int       @default(0) @map("join_cnt")
+  bookmarkCnt    Int       @default(0) @map("bookmark_cnt")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("question_data")
+}
+
+model QuestionDetail {
+  questionDetailId Int       @id @default(autoincrement()) @map("question_detail_id")
+  question         Question? @relation(fields: [questionId], references: [questionId])
+  questionId       Int       @map("question_id")
+  example          String    @db.VarChar(255)
+  comment          String    @db.VarChar(255)
+  answerYn         YesNo     @default(N) @map("answer_yn")
+  selectCnt        Int       @map("select_cnt")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("question_detail")
+}
+
+model QuestionUserHistory {
+  questionUserHistoryId Int       @id @default(autoincrement()) @map("question_user_history_id")
+  questionId            Int       @map("question_id")
+  question              Question? @relation(fields: [questionId], references: [questionId])
+  user                  User      @relation(fields: [userId], references: [id])
+  userId                Int       @map("user_id")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("question_user_history")
+}
+
+model Bookmark {
+  bookmarkId Int       @id @default(autoincrement()) @map("bookmark_id")
+  questionId Int       @map("question_id")
+  question   Question? @relation(fields: [questionId], references: [questionId])
+  userId     Int       @map("user_id")
+  user       User      @relation(fields: [userId], references: [id])
+  useYn      YesNo     @default(Y) @map("use_yn")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("bookmark")
+}
+
+model UserTest {
+  userTestId     Int           @id @default(autoincrement()) @map("user_test_id")
+  subjectId      Int           @map("subject_id")
+  subject        Subject?      @relation(fields: [subjectId], references: [subjectId])
+  pastQuestionId Int?          @map("past_question_id")
+  pastQuestion   PastQuestion? @relation(fields: [pastQuestionId], references: [pastQuestionId])
+  chapterId      Int?          @map("chapter_id")
+  chapter        Chapter?      @relation(fields: [chapterId], references: [chapterId])
+  totalQty       Int           @default(0) @map("total_qty")
+  correctQty     Int           @default(0) @map("correct_qty")
+  wrongQty       Int           @default(0) @map("wrong_qty")
+  userId         Int           @map("user_id")
+  user           User          @relation(fields: [userId], references: [id])
+  testDate       String        @map("test_date") //YYYYMMDD 타입
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  userTestDetails UserTestDetails[]
+
+  @@map("user_test")
+}
+
+model UserTestDetails {
+  userTestDetailId Int      @id @default(autoincrement()) @map("user_test_detail_id")
+  userTestId       Int      @map("user_test_id")
+  userTest         UserTest @relation(fields: [userTestId], references: [userTestId])
+  questionId       Int      @map("question_id")
+  question         Question @relation(fields: [questionId], references: [questionId])
+  answerYn         YesNo?   @map("answer_yn")
+  answerResource   Int?     @default(0) @map("answer_resource") // 유저가 선택한 question Detail id 가 들어가면 될 듯
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  userQuestion UserQuestion?
+
+  @@map("user_test_detail")
+}
+
+model UserQuestion {
+  userQuestionId   Int             @id @default(autoincrement()) @map("user_question_id")
+  userId           Int             @map("user_id")
+  user             User            @relation(fields: [userId], references: [id])
+  subjectId        Int             @map("subject_id")
+  subject          Subject?        @relation(fields: [subjectId], references: [subjectId])
+  chapterId        Int?            @map("chapter_id")
+  chapter          Chapter?        @relation(fields: [chapterId], references: [chapterId])
+  pastQuestionId   Int?            @map("past_question_id")
+  pastQuestion     PastQuestion?   @relation(fields: [pastQuestionId], references: [pastQuestionId])
+  userTestDetailId Int             @unique @map("user_test_detail_id")
+  userTestDetail   UserTestDetails @relation(fields: [userTestDetailId], references: [userTestDetailId])
+  questionId       Int             @map("question_id")
+  question         Question?       @relation(fields: [questionId], references: [questionId])
+  answerResource   Int?            @default(0) @map("answer_resource") // 유저가 선택한 question Detail id 가 들어가면 될 듯
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("user_question")
+}
+
+model Admin {
+  adminNo   Int       @id @default(autoincrement()) @map("admin_no")
+  adminId   String    @unique @map("admin_id") @db.VarChar(20)
+  password  String    @db.VarChar(100)
+  adminName String    @map("admin_name") @db.VarChar(15)
+  email     String?   @db.VarChar(40)
+  sessions  Session[]
+  account   Account?
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("admin")
+}
+
+model User {
+  id            Int       @id @default(autoincrement()) @map("id")
+  name          String?   @db.VarChar(20)
+  email         String?   @unique @db.VarChar(45)
+  emailVerified String?   @unique @db.VarChar(45)
+  password      String?   @db.VarChar(100)
+  image         String?
+  sessions      Session[]
+  account       Account?
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @default(99999999) @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @default(99999999) @map("update_by")
+
+  userTest            UserTest[]
+  questionUserHistory QuestionUserHistory[]
+  bookmarks           Bookmark[]
+  userQuestion        UserQuestion[]
+  userLogging         UserLogging[]
+  userData            UserData[]
+  reportQuestions     ReportQuestion[]
+
+  @@map("user")
+}
+
+model UserData {
+  userDataId Int  @id @default(autoincrement()) @map("user_data_id")
+  user       User @relation(fields: [userId], references: [id])
+  userId     Int  @map("user_id")
+
+  subject   Subject @relation(fields: [subjectId], references: [subjectId])
+  subjectId Int     @map("subject_id")
+
+  correctCnt Int @default(0) @map("correct_cnt")
+  wrongCnt   Int @default(0) @map("wrong_cnt")
+  testCnt    Int @default(0) @map("test_cnt")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @default(99999999) @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @default(99999999) @map("update_by")
+
+  userDataDetail UserDataDetail[]
+
+  @@unique(fields: [userId, subjectId], name: "data_identifier")
+  @@map("user_data")
+}
+
+model UserDataDetail {
+  userDataDetailId Int      @id @default(autoincrement()) @map("user_data_detail_id")
+  userData         UserData @relation(fields: [userDataId], references: [userDataId])
+  userDataId       Int      @map("user_data_id")
+  chapterId        Int      @map("chapter_id")
+  chapter          Chapter? @relation(fields: [chapterId], references: [chapterId])
+  correctCnt       Int      @default(0) @map("correct_cnt")
+  wrongCnt         Int      @default(0) @map("wrong_cnt")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @default(99999999) @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @default(99999999) @map("update_by")
+
+  @@unique(fields: [userDataId, chapterId], name: "data_detail_identifier")
+  @@map("user_data_detail")
+}
+
+model UserLogging {
+  userLoggingId Int @id @default(autoincrement()) @map("user_logging_id")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
+
+  logTime DateTime @default(now()) @map("create_time")
+
+  @@map("user_logging")
+}
+
+model Session {
+  sessionId    Int      @id @default(autoincrement()) @map("session_id")
+  sessionToken String   @unique @map("session_token")
+  expires      DateTime
+  admin        Admin?   @relation(fields: [adminNo], references: [adminNo], onDelete: Cascade)
+  adminNo      Int?     @map("admin_no")
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       Int?     @map("user_id")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@map("session")
+}
+
+model Account {
+  accountId                Int     @id @default(autoincrement()) @map("account_id")
+  type                     String
+  provider                 String
+  providerAccountId        String  @map("provider_account_id")
+  access_token             String? @db.Text
+  refresh_token            String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  idToken                  String? @map("id_token") @db.Text
+  sessionState             String? @map("session_state")
+  refresh_token_expires_in Int?
+  admin                    Admin?  @relation(fields: [adminNo], references: [adminNo], onDelete: Cascade)
+  adminNo                  Int?    @unique @map("admin_no")
+  user                     User?   @relation(fields: [userId], references: [id])
+  userId                   Int?    @unique @map("user_id")
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @default(99999999) @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @default(99999999) @map("update_by")
+
+  @@unique([provider, providerAccountId])
+  @@map("account")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @map("update_by")
+
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+model ReportQuestion {
+  reportQuestionId Int       @id @default(autoincrement()) @map("report_question_id")
+  userId           Int       @map("user_id")
+  user             User      @relation(fields: [userId], references: [id])
+  questionId       Int       @map("question_id")
+  question         Question? @relation(fields: [questionId], references: [questionId])
+  inspectionYn     YesNo     @default(N) @map("inspection_yn")
+  rejectYn         YesNo     @default(N) @map("reject_yn")
+  comment          String?
+
+  createTime DateTime @default(now()) @map("create_time")
+  createBy   Int      @default(99999999) @map("create_by")
+  updateTime DateTime @default(now()) @updatedAt @map("update_time")
+  updateBy   Int      @default(99999999) @map("update_by")
+
+  @@map("report_question")
+}
