@@ -7,7 +7,6 @@
 - `ui`: React component library shared by both `web`, `docs` and `admin` applications
 - `eslint-config-custom`: `eslint` configurations
 - `tsconfig`: `tsconfig.json`s used throughout the monorepo
-- `exam-bomb-constants`: setting coomon constants
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
