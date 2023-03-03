@@ -1,5 +1,5 @@
 const config = {
-  logo: <span>Exam-Bomb Documentation</span>,
+  logo: <span>Coding Test Practice</span>,
 
   head: () => {
     return (
@@ -29,28 +29,15 @@ const config = {
           color="#000000"
         /> */}
         <meta httpEquiv="Content-Language" content="ko" />
-        <meta
-          name="description"
-          content={
-            '정보처리기사, SQLD 등 다양한 시험을 풀 수 있는 환경을 제공해요!'
-          }
-        />
-        <meta
-          name="keyword"
-          content={'정보처리기사, SQLD, 필기시험, 문제은행, 필기시험, 시험'}
-        />
-        <meta
-          name="og:description"
-          content={
-            '정보처리기사, SQLD 등 다양한 시험을 풀 수 있는 환경을 제공해요!'
-          }
-        />
-        <meta name="og:title" content={'ExamBomb 문제은행 서비스입니다.'} />
+        <meta name="description" content={'Coding Test Practice'} />
+        <meta name="keyword" content={'Coding Test Practice'} />
+        <meta name="og:description" content={'Coding Test Practice'} />
+        <meta name="og:title" content={'Coding Test Practice'} />
       </>
     );
   },
   project: {
-    link: 'https://github.com/Team-ere',
+    link: 'https://github.com/glory4god',
   },
   nextThemes: {
     defaultTheme: 'dark',
