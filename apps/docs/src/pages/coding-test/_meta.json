@@ -10,5 +10,9 @@
   "programmers-lv2": {
     "title": "programmers-LV2",
     "type": "page"
+  },
+  "structure": {
+    "title": "자료구조",
+    "type": "page"
   }
 }
