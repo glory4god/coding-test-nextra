@@ -1,18 +1,6 @@
 {
-  "index": {
-    "title": "소개",
-    "type": "page"
-  },
-  "programmers-lv1": {
-    "title": "programmers-LV1",
-    "type": "page"
-  },
-  "programmers-lv2": {
-    "title": "programmers-LV2",
-    "type": "page"
-  },
-  "structure": {
-    "title": "자료구조",
-    "type": "page"
-  }
+  "index": "소개",
+  "programmers-lv1": "programmers-level1",
+  "programmers-lv2": "programmers-level2",
+  "programmers-lv3": "programmers-level3"
 }

@@ -5,6 +5,16 @@
   },
   "coding-test": {
     "title": "Coding-Test",
-    "type": "page"
+    "type": "page",
+    "items": {
+      "programmers-lv1": {
+        "title": "programmers-lv1",
+        "href": "/programmers-lv1"
+      },
+      "programmers-lv2": {
+        "title": "programmers-lv2",
+        "href": "/programmers-lv2"
+      }
+    }
   }
 }
