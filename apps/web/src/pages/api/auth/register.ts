@@ -1,8 +1,6 @@
-import prisma from '@/backend/lib/prisma';
 import { NextApiRequest, NextApiResponse } from 'next';
+import prisma from '@/backend/lib/prisma';
 import { hash } from 'bcrypt';
-
-import { createdDefault } from '../v1/subjects';
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,7 +22,6 @@ export default async function handler(
       data: {
         ...adminBody,
         password: await hash(password, 10),
-        ...createdDefault,
       },
     });
     res.status(200).json(admin);

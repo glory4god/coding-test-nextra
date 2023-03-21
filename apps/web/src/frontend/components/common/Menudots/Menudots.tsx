@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import { CLIENT_PATH_ROUTES } from 'exam-bomb-constants/paths';
 import { Icon } from 'mainlib/components';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -12,7 +11,8 @@ const Menudots = () => {
   return (
     <button
       className={clsx()}
-      onClick={() => push(CLIENT_PATH_ROUTES.userAccounts)}>
+      // onClick={() => push(CLIENT_PATH_ROUTES.userAccounts)}
+    >
       <Icon name={menudots} size={30} />
     </button>
   );

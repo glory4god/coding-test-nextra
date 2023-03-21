@@ -1,29 +1,22 @@
 import { useCallback, useState, useEffect } from 'react';
 import { fetcher } from '@/frontend/lib/apis/fetcher';
-import { Bookmark, ReportQuestion } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 
-export type ReportQuestionWithQ = ReportQuestion & {
-  question: QuestionJoinData;
-};
-
-export default function useReportQuestion() {
-  const [reportQuestions, setReportQuestions] = useState<ReportQuestionWithQ[]>(
-    [],
-  );
+export default function useExample() {
+  const [example, setExample] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const { data: session } = useSession();
 
-  const getReportQuestions = useCallback(async () => {
+  const getExample = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetcher<ReportQuestionWithQ[]>(`/question/report`, {
+      const res = await fetcher<any[]>(`/example`, {
         header: {
           authorization: session?.user?.accessToken,
         },
       });
-      setReportQuestions(res);
+      setExample(res);
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -32,8 +25,8 @@ export default function useReportQuestion() {
   }, [session?.user?.accessToken]);
 
   useEffect(() => {
-    getReportQuestions();
+    getExample();
   }, []);
 
-  return { reportQuestions, loading };
+  return { example, loading };
 }

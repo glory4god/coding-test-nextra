@@ -11,26 +11,20 @@ const Head: FC = () => {
           content="upgrade-insecure-requests"
         />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta property="og:title" content="Exam Bomb - 문제 은행" />
+        <meta property="og:title" content="" />
         <meta property="locale" content="ko_KR" />
         <meta property="og:locale" content="ko_KR" />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://exam-bomb-service.vercel.app"
-        />
-        <meta property="og:site_name" content="Exam Bomb" />
+        <meta property="og:url" content="" />
+        <meta property="og:site_name" content="" />
         <meta property="og:iamge" content="" />
-        <meta
-          property="og:description"
-          content="원하는 과목을 자유롭게 공부해요"
-        />
+        <meta property="og:description" content="" />
         <link type="image/x-icon" rel="icon" href="" />
 
-        <meta property="title" content="Exam Bomb - 문제 은행" />
-        <meta name="author" content="Yu Hayoung" />
-        <meta name="description" content="원하는 과목을 자유롭게 공부해요" />
-        <title>Exam Bomb - 문제 은행</title>
+        <meta property="title" content="" />
+        <meta name="author" content="" />
+        <meta name="description" content="" />
+        <title></title>
       </NextHead>
     </>
   );
