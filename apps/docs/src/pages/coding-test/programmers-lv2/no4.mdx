@@ -1,0 +1,44 @@
+---
+title: 프로그래머스 LV-2 택배상자
+---
+
+# 프로그래머스 LV-2 택배상자
+
+이 문제를 읽자마자 스택의 개념을 생각했다.
+
+idx 변수를 통해 1부터 order의 oIdx 위치에 존재하는 값보다 작다면 스택에 쌓고,
+같다면 스택에 출구 또는 order[oIdx]의 값이 idx와 같다면 배달을 갔기 때문에 oIdx++ 를 해주면 된다.
+
+하지만 스택에 출구의 값이 order[oIdx]보다 크다면 더이상 가능한 케이스가 존재할 수 없기 때문에 break 처리를 해주어야 한다!
+
+====================================
+
+최종코드
+
+```js
+function solution(order) {
+  let stack = [];
+  let idx = 1;
+  let oIdx = 0;
+
+  while (order.length > oIdx) {
+    let o = order[oIdx];
+    if (idx === o) {
+      oIdx++;
+      idx++;
+      continue;
+    }
+    let first = stack[stack.length - 1];
+    if (first === o) {
+      oIdx++;
+      stack.pop();
+    } else {
+      if (first > o) break;
+      stack.push(idx);
+      idx++;
+    }
+  }
+
+  return oIdx;
+}
+```
