@@ -1,0 +1,97 @@
+---
+title: 프로그래머스 LV-2 수식최대화
+---
+
+# 프로그래머스 LV-2 수식최대화
+
+이 문제는 +, -, \* 세 문자의 우선순위에 따른 계산 결과의 최댓값을 얻는게 목표이다.
+
+일단 몇가지 관점을 생각했다.
+
+1. +, -, \* 세 문자를 기준으로 split을 하자.
+2. 계산 순서를 정하자.
+3. 계산 결과를 내자.
+
+결과적으로 stack의 개념으로 계산 결과를 내는 과정을 구현하고,
+bfs를 이용하여 계산 순서를 만들었다.
+
+이 때, 계산 순서를 처음엔 단순히 ["+-*","+*-] 이런식으로 했었지만, 만약 부호가 더 많아진다면 너무 비효율적이라고 생각해서
+bfs를 통해 순서를 만들었다고 생각하면 된다!
+
+====================================
+
+최종코드
+
+```js
+const SIGN = { '+': 'add', '-': 'minus', '*': 'multi' };
+
+const CALCULATOR = {
+  add: (a, b) => a + b,
+  minus: (a, b) => a - b,
+  multi: (a, b) => a * b,
+};
+
+function solution(expression) {
+  var answer = [];
+  let expressions = [];
+  let start = 0;
+  let end = 0;
+  const signKeys = Object.keys(SIGN);
+
+  //     수식 리스트화 시키기
+  while (end < expression.length) {
+    if (signKeys.includes(expression[end])) {
+      expressions.push(expression.substring(start, end));
+      expressions.push(expression[end]);
+      start = end + 1;
+    }
+    end++;
+  }
+  expressions.push(expression.substring(start, end));
+
+  let visited = new Array(signKeys.length).fill(false);
+  let keys = [];
+
+  //     + / - / * 의 순서 추출 BFS
+  const bfs = (acc, level, visited) => {
+    if (level === signKeys.length) {
+      keys.push(acc);
+      return;
+    }
+    for (let i = 0; i < signKeys.length; i++) {
+      if (!visited[i]) {
+        visited[i] = true;
+        bfs(acc + signKeys[i], level + 1, visited);
+        visited[i] = false;
+      }
+    }
+  };
+
+  bfs('', 0, visited);
+  //     6가지 방법에 따라 계산 결과 도출
+  keys.forEach((s) => {
+    let numList = [...expressions];
+    s.split('').forEach((s) => (numList = [...calculate(numList, s)]));
+    answer.push(Math.abs(numList[0]));
+  });
+  return Math.max(...answer);
+}
+
+const calculate = (expressions, sign) => {
+  let newExpressions = [];
+  let idx = 0;
+  while (idx < expressions.length) {
+    const val = expressions[idx];
+    if (val === sign) {
+      newExpressions.push(
+        CALCULATOR[SIGN[sign]](+newExpressions.pop(), +expressions[idx + 1]),
+      );
+      idx++;
+    } else {
+      newExpressions.push(val);
+    }
+    idx++;
+  }
+  return newExpressions;
+};
+```
