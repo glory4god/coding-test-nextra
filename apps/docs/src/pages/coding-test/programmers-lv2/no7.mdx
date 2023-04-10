@@ -1,0 +1,49 @@
+---
+title: 프로그래머스 LV-2 달리기 경주
+---
+
+# 프로그래머스 LV-2 달리기 경주
+
+이 문제는 단순히 스와핑만 해주면 되는 문제였다.
+
+조금은 귀찮지만 해당 플레이어의 앞, 뒤, rank를 저장하여 최대 4명의 플레이어의 정보를 스와핑해주도록 만들었다.
+(필요는 없겠지만 테케 눈 확인하고 싶어서 ... ㅎㅎ)
+
+큰 문제없이 해결되어서 빠르게 끝났다.
+
+====================================
+
+최종코드
+
+```js
+function solution(players, callings) {
+  var answer = [];
+
+  const rankMap = players.reduce((obj, curr, i) => {
+    obj[curr] = {
+      rank: i + 1,
+      front: players[i - 1] ?? null,
+      back: players[i + 1] ?? null,
+    };
+    return obj;
+  }, {});
+
+  callings.forEach((player) => {
+    const { rank, front, back } = rankMap[player];
+    const { rank: rank2, front: front2, back: back2 } = rankMap[front];
+
+    rankMap[player] = { rank: rank2, front: front2, back: front };
+    rankMap[front] = { rank: rank, front: player, back: back };
+    if (rankMap[front2]) {
+      rankMap[front2] = { ...rankMap[front2], back: player };
+    }
+    if (rankMap[back]) {
+      rankMap[back] = { ...rankMap[back], front };
+    }
+  });
+
+  return Object.keys(rankMap)
+    .sort((a, b) => rankMap[a].rank - rankMap[b].rank)
+    .map((a) => a);
+}
+```
