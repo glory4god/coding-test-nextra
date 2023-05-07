@@ -16,5 +16,9 @@
         "href": "/programmers-lv2"
       }
     }
+  },
+  "structure": {
+    "title": "Structure",
+    "type": "page"
   }
 }
